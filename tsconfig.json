@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+	    "module": "commonjs",			/* The output module type */
+	    "esModuleInterop": true,			/* Allows usage of an alternate module import syntax: import foo from 'foo' */
+	    "target": "es6",
+	    "noImplicitAny": true,			/* Raise error on expressions and declarations with an implied any type. */
+	    "moduleResolution": "node",			/* Use Node module resolution strategy: https://www.typescriptlang.org/docs/handbook/module-resolution.html#node */	
+	    "sourceMap": true,				/* Generates corresponding .map file. - for debugging purposes */
+	    "outDir": "dist",
+	    "baseUrl": ".",
+	    "paths": {
+		"*": [
+		    "node_modules/*",
+		    "src/types/*"
+		]
+	    }
+	},
+	"include": [
+	    "src/**/*"
+	]
+    }
