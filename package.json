@@ -1,0 +1,17 @@
+{
+  "name": "image-delivery-service",
+  "version": "0.0.1",
+  "description": "An image delivery service for Ownzones Node.js Challenge",
+  "main": ".",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Cristian Mardare",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "3.8.3"
+  }
+}
