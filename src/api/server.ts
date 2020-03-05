@@ -1,7 +1,11 @@
-import express from "express"
+import express from 'express'
+import { AppRouter } from './routes'
+
+
 const PORT = 62226
 
-const app = express();
+const app = express()
+app.use(AppRouter)
 
 app.listen(PORT, () => {
   // tslint:disable-next-line:no-console
