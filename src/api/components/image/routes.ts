@@ -4,6 +4,6 @@ import ImageController from './controller'
 const router: Router = Router()
 const ctrl: ImageController = new ImageController()
 
-router.get('/', ctrl.get)
+router.get('/:file?', ctrl.get)
 
 export const ImageRouter: Router = router
