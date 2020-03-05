@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import ImageController from './controller'
+import ImageController from '@api/image/controller'
 
 const router: Router = Router()
 const ctrl: ImageController = new ImageController()

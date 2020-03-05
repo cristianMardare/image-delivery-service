@@ -2,16 +2,17 @@
   "name": "image-delivery-service",
   "version": "0.0.1",
   "description": "An image delivery service for Ownzones Node.js Challenge",
-  "main": "dist/server.js",
+  "main": "dist/api/server.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "start": "npm run build-ts && node dist/server.js",
+    "start": "npm run clean && npm run build-ts && node dist/api/server.js",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:reload": "nodemon --watch src -e ts --exec npm run start"
+    "dev:reload": "nodemon --watch src -e ts --exec npm run start",
+    "clean": "rimraf ./dist"
   },
   "author": "Cristian Mardare",
   "license": "ISC",
@@ -21,6 +22,12 @@
   },
   "dependencies": {
     "express": "4.17.1",
-    "nodemon": "2.0.2"
+    "module-alias": "2.2.2",
+    "nodemon": "2.0.2",
+    "rimraf": "3.0.2"
+  },
+  "_moduleAliases": {
+	"@api/image": "dist/api/components/image",
+	"@services": "dist/services"
   }
 }

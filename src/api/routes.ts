@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { ImageRouter } from './components/image/routes'
+import { ImageRouter } from '@api/image/routes'
 
 const router: Router = Router()
 
