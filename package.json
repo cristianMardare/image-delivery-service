@@ -10,7 +10,8 @@
     "start": "npm run build-ts && node dist/server.js",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:reload": "nodemon --watch src -e ts --exec npm run start"
   },
   "author": "Cristian Mardare",
   "license": "ISC",
@@ -19,6 +20,7 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "express": "4.17.1"
+    "express": "4.17.1",
+    "nodemon": "2.0.2"
   }
 }
