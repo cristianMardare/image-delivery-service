@@ -14,7 +14,7 @@ const stat = promisify(fs.stat)
 class ImageController {
 	get = async (req: Request, res: Response) => {
 		var file: string | undefined = req.params.file || req.query.file || undefined
-		var size = req.query.size || undefined
+		var size: string | undefined = req.query.size || undefined
 
 		if (!file){
 			return process.nextTick(() => res
@@ -25,18 +25,18 @@ class ImageController {
 		const options: IResizeOptions = parseSize(size)
 
 		{
-			let originalFileName = path.basename(file)	// filename including extension
-			let fileName = originalFileName
+			let originalFileName: string = path.basename(file)	// filename including extension
+			let fileName: string = originalFileName
 			
 			if (typeof(options) !== 'undefined'){
-				let ext = path.extname(file)
-				let fileWithoutExtension = path.basename(file, ext)
+				let ext: string = path.extname(file)
+				let fileWithoutExtension: string = path.basename(file, ext)
 
 				fileName = `${fileWithoutExtension}_${options.width}_${options.height}${ext}`
 			}
 			
-			let pathToFile = path.join(global.__basedir, 'repository', fileName)
-			let cached = false
+			let pathToFile: string = path.join(global.__basedir, 'repository', fileName)
+			let cached: boolean = false
 
 			try {
 				await stat(pathToFile)
@@ -49,7 +49,7 @@ class ImageController {
 
 				// file does not exist in cache, create it and cache it afterwards
 				{
-					let pathToOriginalFile = path.join(global.__basedir, 'repository', originalFileName)
+					let pathToOriginalFile: string = path.join(global.__basedir, 'repository', originalFileName)
 					let resizer = sharp().resize(options)
 					let resizingStream = fs.createReadStream(pathToOriginalFile)
 						.pipe(resizer)
