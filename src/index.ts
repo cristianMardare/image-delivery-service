@@ -1,7 +1,12 @@
 import path from 'path'
-import server from './api/server'
+import { server }  from './api/server'
 
 global.__basedir = path.join(__dirname, '..')
-console.log(global.__basedir)
 
-server()	// start server
+const PORT = 62226
+
+server.listen(PORT, () => {
+	// tslint:disable-next-line:no-console
+	console.log(`Server listening at http://localhost:${PORT}`);
+	});
+

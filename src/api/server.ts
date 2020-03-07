@@ -3,16 +3,9 @@ import express from 'express'
 import http from 'http'
 import { AppRouter } from './routes'
 
-export default function(): http.Server {
-	const PORT = 62226
 
-	const app = express()
-	app.use(AppRouter)
+const app = express()
 
-	let server: http.Server = app.listen(PORT, () => {
-	// tslint:disable-next-line:no-console
-	console.log(`Server listening at http://localhost:${PORT}`);
-	});
+app.use(AppRouter)
 
-	return server;
-}
+export const server: express.Express = app
