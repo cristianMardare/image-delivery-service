@@ -51,17 +51,14 @@ class ImageController {
 				{
 					let pathToOriginalFile: string = path.join(global.__basedir, 'repository', originalFileName)
 					let resizer = sharp().resize(options)
-					let resizingStream = fs.createReadStream(pathToOriginalFile)
+					let pipeline = fs.createReadStream(pathToOriginalFile)
 						.pipe(resizer)
 					
 					// pipe in caching
-					resizingStream.pipe(              
-						new stream.PassThrough().pipe(
-							fs.createWriteStream(pathToFile)
-					      ))
+					pipeline.clone().pipe(fs.createWriteStream(pathToFile))
 
 					// finally pipe in the response to the resizing transformation stream
-					return resizingStream.pipe(res)
+					return pipeline.pipe(res)
 				}
 				
 			}
