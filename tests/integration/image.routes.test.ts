@@ -111,6 +111,22 @@ describe('GET /api/image', () => {
 			const NEW_WIDTH = resizeBy * DEFAULT_WIDTH
 			const NEW_HEIGHT = resizeBy * DEFAULT_HEIGHT
 
+			test('should successfully return resized file (file name as part of path)', async () => {
+				let path = `${ROUTE}/${FILE_NAME}?size=${NEW_WIDTH}x${NEW_HEIGHT}`
+
+				const resp = await request(server)
+						.get(path)
+						.buffer()
+						.parse(binaryParser)
+
+				expect(resp.status).toEqual(200)
+
+				let meta = await sharp(resp.body).metadata()
+				expect(meta.width).toEqual(NEW_WIDTH)
+				expect(meta.height).toEqual(NEW_HEIGHT)
+				expect(meta.format).toEqual(EXTENSIONS.PNG)
+			})
+
 			test('should successfully return resized file (file name as query string parameter)', async () => {
 				let path = `${ROUTE}?file=${FILE_NAME}&size=${NEW_WIDTH}x${NEW_HEIGHT}`
 
@@ -125,6 +141,19 @@ describe('GET /api/image', () => {
 				expect(meta.width).toEqual(NEW_WIDTH)
 				expect(meta.height).toEqual(NEW_HEIGHT)
 				expect(meta.format).toEqual(EXTENSIONS.PNG)
+			})
+
+			test('should successfully return resized file from cache for subsequent calls', async() => {
+				let path = `${ROUTE}?file=${FILE_NAME}&size=${NEW_WIDTH}x${NEW_HEIGHT}`
+
+				const resp1 = await request(server)
+						.get(path)
+
+				const resp2 = await request(server)
+						.get(path)
+
+				expect(resp1.header['x-cache']).toEqual('MISS')
+				expect(resp2.header['x-cache']).toEqual('HIT')
 			})
 
 			afterEach(async () => {
