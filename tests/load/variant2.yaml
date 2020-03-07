@@ -1,0 +1,25 @@
+config:
+  name: "Calls to existing or missing images (no resizes)"
+  target: http://localhost:50001
+  phases:
+    - duration: 60
+      arrivalRate:  50
+      name: "Constant low load"
+    - duration: 60
+      arrivalRate:  50
+      rampTo: 500
+      name: "Increasing low to mid load"
+    - duration: 120
+      arrivalRate:  1000
+      name: "Sustained high load"
+scenarios:
+  - flow:
+    - get:
+        url: "/api/image/node_00001.png"
+    name: "GET existing image"
+    weight: 2
+  - flow:
+    - get:
+        url: "/api/image/missing_file.png"
+    name: "GET missing image"
+    weight: 1
