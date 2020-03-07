@@ -58,12 +58,14 @@ class ImageController {
 					pipeline.clone().pipe(fs.createWriteStream(pathToFile))
 
 					// finally pipe in the response to the resizing transformation stream
+					res.header('X-Cache', 'MISS')
 					return pipeline.pipe(res)
 				}
 				
 			}
 
 			if (cached){
+				res.header('X-Cache', 'HIT')
 				fs.createReadStream(pathToFile)
 					.pipe(res)
 			}
