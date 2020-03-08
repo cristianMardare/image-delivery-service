@@ -5,7 +5,7 @@ WORKDIR /usr/image_delivery_service
 
 # install dependencies first (changes here are uncommon) 
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --production
 
 # copy source files
 COPY . .
