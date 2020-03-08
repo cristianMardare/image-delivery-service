@@ -1,14 +1,14 @@
 import fs from 'fs'
 import path from 'path'
 
-export class Stats {
-	private static instance: Stats
+export class StatisticsService {
+	private static instance: StatisticsService
 
-	static getInstance(): Stats{
-		if (typeof (Stats.instance) === 'undefined')
-			Stats.instance = new Stats()
+	static getInstance(): StatisticsService{
+		if (typeof (StatisticsService.instance) === 'undefined')
+		StatisticsService.instance = new StatisticsService()
 			
-		return Stats.instance
+		return StatisticsService.instance
 	}
 
 	private _statistics: Statistics
