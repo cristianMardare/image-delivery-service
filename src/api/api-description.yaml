@@ -1,0 +1,73 @@
+swagger: "2.0"
+info:
+  title: "Ownzones Node.js Challenge"
+  description: "Image delivery microservice"
+  version: "0.0.1"
+host: "localhost:62226"
+basePath: "/api"
+schemes:
+  - "http"
+tags:
+  - name: "image"
+  - name: "statistics"
+paths:
+  /image/{fileName}:
+    get:
+      tags:
+      - "image"
+      summary: "Get image by name"
+      description: "Returns an image in original or specified size"
+      operationId: "getImage"
+      produces:
+        - "image/jpeg"
+        - "image/png"
+      parameters:
+        - name: "fileName"
+          in: "path"
+          description: "File name with extension"
+          required: true
+          type: "string"
+        - name: "size"
+          in: "query"
+          description: "Size of the image in width x height (e.g. 300x300)"
+          required: false
+          type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+        400:
+          description: "Invalid size format"
+        404:
+          description: "Original file not found"
+  /statistics:
+    get:
+      tags:
+        - "statistics"
+      summary: "Get statistics of server activity"
+      description: "Returns data about cache hits/misses or number of original / resized files in the repository"
+      operationId: "getStatistics"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Statistics"
+definitions:
+  Statistics:
+    type: "object"
+    properties:
+      cache_hits:
+        type: "integer"
+        format: "int32"
+      cache_misses:
+        type: "integer"
+        format: "int32"
+      repository_count:
+        type: "integer"
+        format: "int32"
+        
+
+      
+    
+
