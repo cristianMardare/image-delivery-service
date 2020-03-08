@@ -27,6 +27,17 @@ class ImageController {
 		{
 			let originalFileName: string = path.basename(file)	// filename including extension
 			let fileName: string = originalFileName
+
+			{
+				try{
+					let pathToOriginalFile: string = path.join(global.__basedir, 'repository', originalFileName)
+					await stat(pathToOriginalFile)
+				}
+				catch (err){
+					return res.status(404)
+							.send(`File ${originalFileName} does not exist`)
+				}
+			}
 			
 			if (typeof(options) !== 'undefined'){
 				let ext: string = path.extname(file)
@@ -37,16 +48,11 @@ class ImageController {
 			
 			let pathToFile: string = path.join(global.__basedir, 'repository', fileName)
 			let cached: boolean = false
-
+			
 			try {
 				await stat(pathToFile)
 				cached = true
 			} catch(err){
-				
-				if (!options)	// no resize options means original file
-					return res.status(404)
-							.send(`File ${fileName} does not exist`)
-
 				// file does not exist in cache, create it and cache it afterwards
 				{
 					let pathToOriginalFile: string = path.join(global.__basedir, 'repository', originalFileName)
