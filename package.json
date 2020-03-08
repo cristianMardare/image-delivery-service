@@ -7,8 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "start": "npm run build:clean && npm run build-ts && node dist/index.js",
+    "start": "npm run build && node dist/index.js",
     "dev:watch": "nodemon --watch src -e ts --exec npm run start",
+    "build": "npm run build:clean && npm run build-ts",
     "build:clean": "rimraf ./dist",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
