@@ -23,6 +23,24 @@ const unlink = promisify(fs.unlink)
 
 describe('GET /api/image', () => {
 	const ROUTE = '/api/image'
+
+	var FILE_PATH = 'N/A'
+	var FILE_NAME_NO_EXT = 'test_file'
+	var EXTENSIONS = {
+		PNG: 'png',
+		JPG: 'jpg'
+	}
+	var FILE_NAME = `${FILE_NAME_NO_EXT}.${EXTENSIONS.PNG}`
+
+	const DEFAULT_WIDTH = 110
+	const DEFAULT_HEIGHT = 100
+	const DEFAULT_CHANNELS = 4
+
+	beforeAll(() => {
+		FILE_PATH = path.join(global.__basedir, 'repository', FILE_NAME)
+	})
+
+
 	describe('with no file name in the path or query string', () => {
 		test('should return 400 Bad Request', async () => {
 			await request(server)
@@ -45,24 +63,25 @@ describe('GET /api/image', () => {
 				.get(path)
 				.expect(404)
 		})
+
+		describe('and given valid new size', () => { 
+			const resizeBy = 0.5
+			const NEW_WIDTH = resizeBy * DEFAULT_WIDTH
+			const NEW_HEIGHT = resizeBy * DEFAULT_HEIGHT
+
+			test('should return 404 Not Found (file name as part of path)', async () => {
+				let path = `${ROUTE}/missing_file.png?size=${NEW_WIDTH}x${NEW_HEIGHT}`
+
+				const resp = await request(server)
+						.get(path)
+
+				expect(resp.status).toEqual(404)
+			})
+		})
+
 	})
 
 	describe('with file name pointing to existing file', () => {
-		var FILE_PATH = 'N/A'
-		var FILE_NAME_NO_EXT = 'test_file'
-		var EXTENSIONS = {
-			PNG: 'png',
-			JPG: 'jpg'
-		}
-		var FILE_NAME = `${FILE_NAME_NO_EXT}.${EXTENSIONS.PNG}`
-
-		const DEFAULT_WIDTH = 110
-		const DEFAULT_HEIGHT = 100
-		const DEFAULT_CHANNELS = 4
-
-		beforeAll(() => {
-			FILE_PATH = path.join(global.__basedir, 'repository', FILE_NAME)
-		})
 
 		beforeEach(() => {
 			return sharp(FILE_NAME, {
@@ -106,7 +125,7 @@ describe('GET /api/image', () => {
 			expect(meta.format).toEqual(EXTENSIONS.PNG)
 		})
 
-		describe('given new valid size', () => {
+		describe('and given valid new size', () => {
 			const resizeBy = 0.5
 			const NEW_WIDTH = resizeBy * DEFAULT_WIDTH
 			const NEW_HEIGHT = resizeBy * DEFAULT_HEIGHT
