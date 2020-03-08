@@ -39,7 +39,7 @@
     "sharp": "0.24.1"
   },
   "_moduleAliases": {
-    "@api/image": "dist/api/components/image",
+    "@api": "dist/api/components",
     "@services": "dist/services"
   }
 }

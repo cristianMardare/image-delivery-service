@@ -17,7 +17,7 @@ module.exports = {
 	  'tsx',
 	],
 	moduleNameMapper: {
-	  '@api/image/(.*)': '<rootDir>/src/api/components/image/$1',
+	  '@api/(.*)': '<rootDir>/src/api/components/$1',
 	  '@services/(.*)': '<rootDir>/src/services/$1',
 	},
 	testEnvironment: 'node',

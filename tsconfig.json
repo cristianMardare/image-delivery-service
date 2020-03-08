@@ -13,7 +13,7 @@
 		    "node_modules/*",
 		    "src/types/*"
 		],
-		"@api/image/*": [ "src/api/components/image/*"],
+		"@api/*": [ "src/api/components/*"],
 		"@services/*": [ "src/services/*" ],
 	    }
 	},
