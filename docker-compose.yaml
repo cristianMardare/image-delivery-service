@@ -1,0 +1,10 @@
+version: "3"
+services:
+  image_delivery_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ENV_NAME: dev
+    ports:
+      - 80:62226
