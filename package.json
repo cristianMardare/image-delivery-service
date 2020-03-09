@@ -21,7 +21,8 @@
     "test:integration": "jest --testPathPattern=integration",
     "test:load:variant1": "artillery run tests/load/variant1.yaml",
     "test:load:variant2": "artillery run tests/load/variant2.yaml",
-    "test:load:variant3": "artillery run tests/load/variant3.yaml"
+    "test:load:variant3": "artillery run tests/load/variant3.yaml",
+    "test:coverage": "jest --coverage"
   },
   "author": "Cristian Mardare",
   "license": "ISC",
