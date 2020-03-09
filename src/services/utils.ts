@@ -31,12 +31,12 @@ function normalize(...input: any[]) {
 		if (typeof (element) === 'object'){
 			if (element.length)	// element is an array, try to normalize it as well
 			{
-				output.push(...normalize(element))
+				output.push(...normalize(...element))
 				return output
 			}
 			
 			for (const key in element){
-				output.push(...normalize(...element[key]))
+				output.push(...normalize(element[key]))
 			}
 
 			return output
