@@ -10,8 +10,15 @@ const PORT = 62226
 StatisticsService.getInstance().watch(pathFromRoot('repository'), 'original_file_count')
 StatisticsService.getInstance().watch(pathFromRoot('cache'), 'resized_file_count')
 
-server.listen(PORT, () => {
-	// tslint:disable-next-line:no-console
-	console.log(`Server listening at http://localhost:${PORT}`);
+const srv = server.listen(PORT, () => {
+		// tslint:disable-next-line:no-console
+		console.log(`Server listening at http://localhost:${PORT}`);
+	})
+	.on('close', function() {
+		StatisticsService.getInstance()._close()
+		console.log(' Server stopping ...');
 	});
-
+		
+process.on('SIGINT', function() {
+	srv.close();
+});
