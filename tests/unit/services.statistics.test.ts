@@ -55,6 +55,36 @@ describe('StatisticsService', () => {
 			      .toFile(FILE_PATH)
 		})
 
+		test('should ignore undefined folders', () => {
+			expect(() => {
+				StatisticsService.getInstance().watch(undefined, 'test')
+			}).not.toThrow()
+
+			let actualStats = StatisticsService.getInstance().get()
+			expect(actualStats['test']).toBeUndefined()
+			
+		})
+
+		test('should ignore null folders', () => {
+			expect(() => {
+				StatisticsService.getInstance().watch(undefined, 'test')
+			}).not.toThrow()
+
+			let actualStats = StatisticsService.getInstance().get()
+			expect(actualStats['test']).toBeUndefined()
+			
+		})
+
+		test('should ignore missing folders', () => {
+			expect(() => {
+				StatisticsService.getInstance().watch('missing', 'test')
+			}).not.toThrow()
+
+			let actualStats = StatisticsService.getInstance().get()
+			expect(actualStats['test']).toBeUndefined()
+			
+		})
+
 		describe('when created', () => {
 			test('should update number of files in folder', () => {
 				StatisticsService.getInstance().watch(FOLDER, 'test')
