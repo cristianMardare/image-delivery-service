@@ -176,7 +176,7 @@ describe('GET /api/image', () => {
 			})
 
 			afterEach(async () => {
-				const resizedFilePath = path.join(global.__basedir, 'repository', `${FILE_NAME_NO_EXT}_${NEW_WIDTH}_${NEW_HEIGHT}.${EXTENSIONS.PNG}`)
+				const resizedFilePath = path.join(global.__basedir, 'cache', `${FILE_NAME_NO_EXT}_${NEW_WIDTH}_${NEW_HEIGHT}.${EXTENSIONS.PNG}`)
 				try{
 					await unlink(resizedFilePath)
 				}
