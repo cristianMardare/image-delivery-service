@@ -1,19 +1,48 @@
-import { IResizeOptions } from '@api/image/model'
+import path from 'path'
 
-export function parseSize(size: any): IResizeOptions {
-	if (typeof(size) !== 'string')
+export function pathFromRoot(...folders): string {
+	const root = global.__basedir
+
+	folders = normalize(...folders)
+	if (typeof (folders) === 'undefined')
+		return path.join(root)
+
+
+	let output = path.join(root, ...folders)
+
+	return output
+}		
+	
+
+function normalize(...input: any[]) {
+	if (!input || input.length === 0)
 		return undefined
-		
-	const [w, h] = size.split('x')
 
-	let height = Number.parseInt(h)
-	let width = Number.parseInt(w)
+	return input.reduce((output, element) => {
+		if (typeof (element) === 'undefined' || element === null)
+			return output			// skip undefined / null elements
 
-	if (Object.is(height, NaN) || Object.is(width, NaN))
-		return undefined		// parsing failed, no resizing options
+		if (typeof (element) === 'string')
+		{
+			output.push(element)
+			return output	
+		} 
 
-	return {
-		height,
-		width
-	}
+		if (typeof (element) === 'object'){
+			if (element.length)	// element is an array, try to normalize it as well
+			{
+				output.push(...normalize(element))
+				return output
+			}
+			
+			for (const key in element){
+				output.push(...normalize(...element[key]))
+			}
+
+			return output
+		}
+
+		output.push(element.toString())
+		return output
+	}, [])
 }

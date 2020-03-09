@@ -1,82 +1,69 @@
 import { Request, Response } from 'express'
-import path from 'path'
 import { promisify } from 'util'
 import fs from 'fs'
 import sharp from 'sharp'
-import stream from 'stream'
 
-import { IResizeOptions } from '@api/image/model'
-import { parseSize } from '@services/utils'
+import { RequestParsers } from '@api/image/utils'
+import { ImageLocator } from '@services/image-locator'
+import { pathFromRoot } from '@services/utils'
 
  
 const stat = promisify(fs.stat)
 
 class ImageController {
-	get = async (req: Request, res: Response) => {
-		var file: string | undefined = req.params.file || req.query.file || undefined
-		var size: string | undefined = req.query.size || undefined
+	get =  async (req: Request, res: Response) => { 
 
-		if (!file){
+		const {
+			file: originalFileNameWithExt,
+			extension: originalExtension,
+			name: originalFileName,
+			options
+		} = RequestParsers.getImage(req) ?? {}
+
+		if (!originalFileNameWithExt){
 			return process.nextTick(() => res
 							.status(400)
 							.send('Invalid file name'))
 		}
 
-		const options: IResizeOptions = parseSize(size)
+		const repoLocator = new ImageLocator(pathFromRoot('repository'))
 
-		{
-			let originalFileName: string = path.basename(file)	// filename including extension
-			let fileName: string = originalFileName
+		if (!await repoLocator.exists(originalFileNameWithExt))
+			return res.status(404)
+					.send(`File ${originalFileNameWithExt} does not exist`)
+		
 
-			{
-				try{
-					let pathToOriginalFile: string = path.join(global.__basedir, 'repository', originalFileName)
-					await stat(pathToOriginalFile)
-				}
-				catch (err){
-					return res.status(404)
-							.send(`File ${originalFileName} does not exist`)
-				}
-			}
-			
-			if (typeof(options) !== 'undefined'){
-				let ext: string = path.extname(file)
-				let fileWithoutExtension: string = path.basename(file, ext)
+		const shouldResize = typeof(options) !== 'undefined'
 
-				fileName = `${fileWithoutExtension}_${options.width}_${options.height}${ext}`
-			}
-			
-			let pathToFile: string = path.join(global.__basedir, 'repository', fileName)
-			let cached: boolean = false
-			
-			try {
-				await stat(pathToFile)
-				cached = true
-			} catch(err){
-				// file does not exist in cache, create it and cache it afterwards
-				{
-					let pathToOriginalFile: string = path.join(global.__basedir, 'repository', originalFileName)
-					let resizer = sharp().resize(options)
-					let pipeline = fs.createReadStream(pathToOriginalFile)
-						.pipe(resizer)
-					
-					// pipe in caching
-					pipeline.clone().pipe(fs.createWriteStream(pathToFile))
-
-					// finally pipe in the response to the resizing transformation stream
-					res.header('X-Cache', 'MISS')
-					return pipeline.pipe(res)
-				}
-				
-			}
-
-			if (cached){
-				res.header('X-Cache', 'HIT')
-				fs.createReadStream(pathToFile)
+		if (!shouldResize)
+			return repoLocator
+					.read(originalFileNameWithExt)
 					.pipe(res)
-			}
+
+		const cacheLocator = new ImageLocator(pathFromRoot('cache'))
+		let newFileNameWithExt = `${originalFileName}_${options.width}_${options.height}${originalExtension}`
+		
+		if (await cacheLocator.exists(newFileNameWithExt)){
+			res.header('x-cache', 'HIT')
+			return cacheLocator
+					.read(newFileNameWithExt)
+					.pipe(res)
+		}else {
+			let pipeline = repoLocator
+						.read(originalFileNameWithExt)
+						.pipe(sharp().resize(options))
+
+			// pipe in caching
+			pipeline.clone().pipe(cacheLocator.write(newFileNameWithExt))
+
+			// finally pipe in the response to the resizing transformation stream
+			res.header('x-cache', 'MISS')
+			return pipeline.pipe(res)
 		}
 	}
+
 }
+
+
 
 export default ImageController
