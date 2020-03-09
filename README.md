@@ -33,6 +33,16 @@ It uses [nodemon](https://nodemon.io/) to hot reload on *.ts file changes within
 ## Running the tests
 
 * Use `npm run test` or `npx jest` to run all unit / integration tests
+* Use specialized scripts to run only one type of tests:
+```console
+$ npm run test:unit
+$ npm run test:integration
+```
+* Use `npm run test:coverage` or `npx jest --coverage` to generate coverage report
+* If you need to hot reload on test changes, run:
+```console
+$ npm run test:watch
+```
 
 ### Load tests
 
