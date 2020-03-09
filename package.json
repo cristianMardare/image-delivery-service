@@ -17,6 +17,8 @@
     "watch-ts": "tsc -w",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:unit": "jest --testPathPattern=unit",
+    "test:integration": "jest --testPathPattern=integration",
     "test:load:variant1": "artillery run tests/load/variant1.yaml",
     "test:load:variant2": "artillery run tests/load/variant2.yaml",
     "test:load:variant3": "artillery run tests/load/variant3.yaml"
@@ -39,6 +41,7 @@
     "module-alias": "2.2.2",
     "on-headers": "1.0.2",
     "rimraf": "3.0.2",
+    "sanitize-filename": "1.6.3",
     "sharp": "0.24.1",
     "swagger-ui-express": "4.1.3",
     "typescript": "3.8.3",
