@@ -1,8 +1,10 @@
 import fs from 'fs'
 import path from 'path'
+import { EventEmitter } from 'events'
 
-export class StatisticsService {
+export class StatisticsService extends EventEmitter {
 	private static instance: StatisticsService
+	private _watchers: fs.FSWatcher[]
 
 	static getInstance(): StatisticsService{
 		if (typeof (StatisticsService.instance) === 'undefined')
@@ -14,10 +16,13 @@ export class StatisticsService {
 	private _statistics: Statistics
 
 	constructor(){
+		super()
 		this._statistics = {
 			cache_hits: 0,
 			cache_misses: 0
 		}
+
+		this._watchers = []
 	}
 
 	cacheHit() {
@@ -28,11 +33,11 @@ export class StatisticsService {
 		this._statistics.cache_misses++
 	}
 
-	watch(folder: string, label: string){
+	watch(folder: string, label?: string){
 		if (!folder)
 			return
 
-		if (!folder)
+		if (!label)
 			label = path.basename(folder)
 
 		try {
@@ -44,19 +49,33 @@ export class StatisticsService {
 			return
 		}
 
-		fs.watch(folder, (event, filename) => {
+		let watcher = fs.watch(folder, (event, filename) => {
 			if (event === 'rename')	// On most platforms, 'rename' is emitted whenever a filename appears or disappears in the directory. (https://nodejs.org/docs/latest/api/fs.html#fs_fs_watch_filename_options_listener)
 			{
 				fs.readdir(folder, (err, files) => {
-					if (!err)
+					if (!err){
 						this._statistics[label] = files.length
+						this.emit('change', this._statistics)
+					}
+						
 				})
 			}
 		})
+
+		this._watchers.push(watcher)
 	}
 
 	get() {
 		return this._statistics
+	}
+
+	_flush() {
+		this._statistics.cache_hits = 0
+		this._statistics.cache_misses = 0
+	}
+
+	_close() {
+		this._watchers.forEach(watch => watch.close())
 	}
 }
 
